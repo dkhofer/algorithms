@@ -13,7 +13,7 @@ class Fibonacci
 
     return one if n <= 2
 
-    cache = [one, one] of BigInt
+    cache = [one, one]
 
     (2..n).each do |i|
       cache << cache[i-1] + cache[i-2]
