@@ -4,8 +4,6 @@ module Algebra
   # 1. Class method to define an identity element (equal to x ** 0 for all x)
   # 2. Instance method to define the * operator (which must be associative but doesn't have to be commutative)
   def **(n : Int64)
-    return self.class.identity if n == 0
-
     result = self.class.identity
     square = self
 

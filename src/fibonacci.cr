@@ -4,16 +4,12 @@ require "big_int"
 
 class Fibonacci
   def self.naive(n)
-    return n if n < 2
+    return n.to_big_i if n < 2
     return naive(n-1) + naive(n-2)
   end
 
   def self.using_cache(n)
-    one = BigInt.new(1)
-
-    return one if n <= 2
-
-    cache = [one, one]
+    cache = [1.to_big_i, 1.to_big_i]
 
     (2..n).each do |i|
       cache << cache[i-1] + cache[i-2]
@@ -30,14 +26,18 @@ end
 class FibMatrix
   include Algebra
 
+  ZERO = 0.to_big_i
+  ONE = 1.to_big_i
+  IDENTITY_VALUES = [[ONE, ONE], [ONE, ZERO]]
+
   getter values
 
-  def initialize(vals = [[BigInt.new(1), BigInt.new(1)], [BigInt.new(1), BigInt.new(0)]])
+  def initialize(vals = IDENTITY_VALUES)
     @values = vals
   end
 
   def self.identity
-    FibMatrix.new([[BigInt.new(1), BigInt.new(1)], [BigInt.new(1), BigInt.new(0)]])
+    FibMatrix.new(IDENTITY_VALUES)
   end
 
   def *(other_matrix)
