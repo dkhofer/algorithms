@@ -76,4 +76,29 @@ module Basics
   def branchless_abs(x)
     ((x >> 30) | 1) * x
   end
+
+  # NOTE(hofer): Totally irrelevant in today's world of lots of
+  # memory, but still fascinating.  XOR is equivalent to bit vector
+  # addition in GF(2) (aka mod 2 arithmetic for each vector entry), so
+  # it is both commutative and associative.  So line 2 is
+  # (x ^ y) ^ y
+  # = x ^ (y ^ y)
+  # = x,
+  # and line 3 in terms of the original x and y is
+  # (x ^ y) ^ ((x ^ y) ^ y)
+  # = (x ^ y) ^ (x ^ (y ^ y))
+  # = (x ^ y) ^ x
+  # = (y ^ x) ^ x
+  # = y ^ (x ^ x)
+  # = y
+  #
+  # Or another way of putting it is that, because of the commutativity
+  # and associativity of XOR, if you are XORing an even number of x's
+  # and an odd number of y's together, the result will be y.
+  def swap_values(x, y)
+    x = x ^ y
+    y = x ^ y
+    x = x ^ y
+    [x, y]
+  end
 end

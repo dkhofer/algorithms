@@ -96,4 +96,14 @@ describe "Basics" do
     branchless_abs(8).should eq 8
     branchless_abs(-385727).should eq 385727
   end
+
+  it "swaps two values" do
+    a, b = swap_values(2, 7)
+    a.should eq 7
+    b.should eq 2
+
+    a, b = swap_values(395.to_big_i, 9287.to_big_i)
+    a.should eq 9287.to_big_i
+    b.should eq 395.to_big_i
+  end
 end
