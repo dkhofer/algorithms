@@ -1,3 +1,5 @@
+require "big_int"
+
 module Basics
   def negate_rightmost_one(x)
     x & (x - 1)
@@ -41,6 +43,34 @@ module Basics
     ones = x ^ ripple
     ones = (ones >> 2) / smallest_one
     ripple | ones
+  end
+
+  def indexes_from_bits(x, list)
+    result = Array(Int32).new
+    i = 0
+    while x > 0
+      if x & 1 == 1
+        result << i
+      end
+      i += 1
+      x >>= 1
+    end
+
+    result
+  end
+
+  # NOTE(hofer): This is not the most efficient way to do this.  The
+  # number of operations in indexes_from_bits is O(n) where n is
+  # array.size.  The current Crystal implementation uses O(m)
+  # operations where m = number.
+  def each_combination(array, number)
+    counter = (2 ** number - 1).to_big_i
+    max = (2 ** array.size).to_big_i
+
+    while counter < max
+      yield indexes_from_bits(counter, array).map { |i| array[i] }
+      counter = smallest_next_int_with_same_one_count(counter)
+    end
   end
 
   def branchless_abs(x)

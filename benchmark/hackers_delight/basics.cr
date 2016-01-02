@@ -7,6 +7,5 @@ def run_multiple_times(n, &block)
   Benchmark.measure { n.times { yield } }.real
 end
 
-puts "Default abs (1M times): #{run_multiple_times(1_000_000) { -1234.abs } }"
-puts "Branchless abs (1M times): #{run_multiple_times(1_000_000) { branchless_abs(-1234) } }"
-
+puts "Default each_combination: #{run_multiple_times(1) { (1..20).to_a.each_combination(10) { x = 1 } } }"
+puts "New each_combination:  #{run_multiple_times(1) { each_combination((1..20).to_a, 10) { x = 1 } } }"

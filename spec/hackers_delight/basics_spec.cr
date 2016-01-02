@@ -3,6 +3,16 @@ require "../../src/hackers_delight/basics"
 
 include Basics
 
+def test_combo_iterator(list, subset_size)
+  combo_set = Set(Array(typeof(list.first))).new
+  each_combination(list, subset_size) do |combo|
+    combo.size.should eq subset_size
+    combo_set.add(combo)
+  end
+
+  return combo_set
+end
+
 describe "Basics" do
   it "negates the rightmost one" do
     negate_rightmost_one(0x58).should eq 0x50
@@ -55,7 +65,31 @@ describe "Basics" do
   end
 
   it "iterates over numbers having the same number of ones" do
+    # 11110000 -> 100000111
     smallest_next_int_with_same_one_count(0xF0).should eq 0x107
+    # 100000111 -> 100001011
+    smallest_next_int_with_same_one_count(0x107).should eq 0x10B
+  end
+
+#  it "converts bits to indexes" do
+#    indexes_from_bits(0x55, (0..7).to_a).should eq [0,2,4,6]
+#  end
+
+  context "each_combination" do
+    it "works for small sets" do
+      combo_set = test_combo_iterator([:a, :b, :c, :d], 2)
+      combo_set.size.should eq 6
+
+      combo_set = test_combo_iterator([:a, :b, :c, :d], 3)
+      combo_set.size.should eq 4
+    end
+
+    it "works for big sets" do
+      input = (1..100).to_a
+      combo_set = test_combo_iterator(input, 3)
+
+      combo_set.size.should eq 161700
+    end
   end
 
   it "computes abs without branching" do
