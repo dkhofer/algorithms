@@ -70,4 +70,32 @@ module DivideAndConquer
       raise "Unexpected input type: #{typeof(x)}."
     end
   end
+
+  def leading_zero_count(x)
+    case x
+    when Int32, UInt32
+      x = x.to_u32
+      x = x | (x >> 1)
+      x = x | (x >> 2)
+      x = x | (x >> 4)
+      x = x | (x >> 8)
+      x = x | (x >> 16)
+    when Int64, UInt64
+      x = x.to_u64
+      x = x | (x >> 1)
+      x = x | (x >> 2)
+      x = x | (x >> 4)
+      x = x | (x >> 8)
+      x = x | (x >> 16)
+      x = x | (x >> 32)
+    else
+      raise "Unexpected input type: #{typeof(x)}."
+    end
+
+    count_ones(~x)
+  end
+
+  def trailing_zero_count(x)
+    count_ones(~x & (x - 1))
+  end
 end

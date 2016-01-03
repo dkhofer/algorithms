@@ -29,4 +29,16 @@ describe "Divide and conquer" do
     parity(0x1111111111111113).should eq 1
     parity(0x1234FEDC1234FEDC).should eq 0
   end
+
+  it "finds the number of leading zeroes" do
+    leading_zero_count(0x0FFFFFFF).should eq 4
+    leading_zero_count(0xF0000000.to_i32).should eq 0
+    leading_zero_count(0x00000010).should eq 27
+  end
+
+  it "finds the number of trailing zeroes" do
+    trailing_zero_count(0x0FFFFFFF).should eq 0
+    trailing_zero_count(0xF0000000.to_i32).should eq 28
+    trailing_zero_count(0x00000010).should eq 4
+  end
 end
