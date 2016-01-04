@@ -98,4 +98,33 @@ module DivideAndConquer
   def trailing_zero_count(x)
     count_ones(~x & (x - 1))
   end
+
+  def outer_shuffle(x)
+    case x
+    when Int32, UInt32
+      x = x.to_u32
+      t = (x ^ (x >> 8)) & 0x0000FF00
+      x = x ^ t ^ (t << 8)
+      t = (x ^ (x >> 4)) & 0x00F000F0
+      x = x ^ t ^ (t << 4)
+      t = (x ^ (x >> 2)) & 0x0C0C0C0C
+      x = x ^ t ^ (t << 2)
+      t = (x ^ (x >> 1)) & 0x22222222
+      x ^ t ^ (t << 1)
+    when Int64, UInt64
+      x = x.to_u64
+      t = (x ^ (x >> 16)) & 0x00000000FFFF0000
+      x = x ^ t ^ (t << 16)
+      t = (x ^ (x >> 8)) & 0x0000FF000000FF00
+      x = x ^ t ^ (t << 8)
+      t = (x ^ (x >> 4)) & 0x00F000F000F000F0
+      x = x ^ t ^ (t << 4)
+      t = (x ^ (x >> 2)) & 0x0C0C0C0C0C0C0C0C
+      x = x ^ t ^ (t << 2)
+      t = (x ^ (x >> 1)) & 0x2222222222222222
+      x ^ t ^ (t << 1)
+    else
+      raise "Unexpected input type: #{typeof(x)}."
+    end
+  end
 end

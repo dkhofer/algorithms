@@ -41,4 +41,9 @@ describe "Divide and conquer" do
     trailing_zero_count(0xF0000000.to_i32).should eq 28
     trailing_zero_count(0x00000010).should eq 4
   end
+
+  it "shuffles bits" do
+    outer_shuffle(0x10101010).should eq 0x03000300
+    outer_shuffle(0x1010101010101010).should eq 0x0300030003000300
+  end
 end
