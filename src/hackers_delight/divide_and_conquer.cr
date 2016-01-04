@@ -1,4 +1,6 @@
 module DivideAndConquer
+  include Basics
+
   def reverse_bits(x)
     case x
     when Int32, UInt32
@@ -97,6 +99,8 @@ module DivideAndConquer
 
   def trailing_zero_count(x)
     count_ones(~x & (x - 1))
+    # TODO(hofer): Get popcount for bigint working.
+#    (~x & (x - 1)).popcount
   end
 
   def outer_shuffle(x)
@@ -125,6 +129,28 @@ module DivideAndConquer
       x ^ t ^ (t << 1)
     else
       raise "Unexpected input type: #{typeof(x)}."
+    end
+  end
+
+  def indexes_from_bits(x, list)
+    result = Array(Int32).new
+    while x > 0
+      power_of_two = isolate_rightmost_one(x)
+      result << trailing_zero_count(power_of_two).to_i
+      x &= ~power_of_two
+    end
+
+    result
+  end
+
+  def each_combination(array, number)
+    # TODO(hofer): Get popcount for bigint working.
+    counter = (2 ** number - 1).to_i64
+    max = (2 ** array.size).to_i64
+
+    while counter < max
+      yield indexes_from_bits(counter, array).map { |i| array[i] }
+      counter = smallest_next_int_with_same_one_count(counter)
     end
   end
 end

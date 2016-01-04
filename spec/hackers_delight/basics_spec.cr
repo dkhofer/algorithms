@@ -3,9 +3,9 @@ require "../../src/hackers_delight/basics"
 
 include Basics
 
-def test_combo_iterator(list, subset_size)
+def test_naive_combo_iterator(list, subset_size)
   combo_set = Set(Array(typeof(list.first))).new
-  each_combination(list, subset_size) do |combo|
+  each_combination_naive(list, subset_size) do |combo|
     combo.size.should eq subset_size
     combo_set.add(combo)
   end
@@ -71,24 +71,24 @@ describe "Basics" do
     smallest_next_int_with_same_one_count(0x107).should eq 0x10B
   end
 
-#  it "converts bits to indexes" do
-#    indexes_from_bits(0x55, (0..7).to_a).should eq [0,2,4,6]
-#  end
+ it "converts bits to indexes" do
+   indexes_from_bits_naive(0x55, (0..7).to_a).should eq [0,2,4,6]
+ end
 
   context "each_combination" do
     it "works for small sets" do
-      combo_set = test_combo_iterator([:a, :b, :c, :d], 2)
+      combo_set = test_naive_combo_iterator([:a, :b, :c, :d], 2)
       combo_set.size.should eq 6
 
-      combo_set = test_combo_iterator([:a, :b, :c, :d], 3)
+      combo_set = test_naive_combo_iterator([:a, :b, :c, :d], 3)
       combo_set.size.should eq 4
     end
 
     it "works for big sets" do
-      input = (1..100).to_a
-      combo_set = test_combo_iterator(input, 3)
+     input = (1..100).to_a
+     combo_set = test_naive_combo_iterator(input, 3)
 
-      combo_set.size.should eq 161700
+     combo_set.size.should eq 161700
     end
   end
 

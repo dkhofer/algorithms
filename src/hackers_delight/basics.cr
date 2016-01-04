@@ -45,7 +45,7 @@ module Basics
     ripple | ones
   end
 
-  def indexes_from_bits(x, list)
+  def indexes_from_bits_naive(x, list)
     result = Array(Int32).new
     i = 0
     while x > 0
@@ -63,12 +63,12 @@ module Basics
   # number of operations in indexes_from_bits is O(n) where n is
   # array.size.  The current Crystal implementation uses O(m)
   # operations where m = number.
-  def each_combination(array, number)
+  def each_combination_naive(array, number)
     counter = (2 ** number - 1).to_big_i
     max = (2 ** array.size).to_big_i
 
     while counter < max
-      yield indexes_from_bits(counter, array).map { |i| array[i] }
+      yield indexes_from_bits_naive(counter, array).map { |i| array[i] }
       counter = smallest_next_int_with_same_one_count(counter)
     end
   end

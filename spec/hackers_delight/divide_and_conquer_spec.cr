@@ -3,6 +3,16 @@ require "../../src/hackers_delight/divide_and_conquer"
 
 include DivideAndConquer
 
+def test_combo_iterator(list, subset_size)
+  combo_set = Set(Array(typeof(list.first))).new
+  each_combination(list, subset_size) do |combo|
+    combo.size.should eq subset_size
+    combo_set.add(combo)
+  end
+
+  return combo_set
+end
+
 describe "Divide and conquer" do
   it "reverses bits in a word" do
     reverse_bits(0x55555555).should eq 0xAAAAAAAA
@@ -45,5 +55,28 @@ describe "Divide and conquer" do
   it "shuffles bits" do
     outer_shuffle(0x10101010).should eq 0x03000300
     outer_shuffle(0x1010101010101010).should eq 0x0300030003000300
+  end
+
+  context "each_combination" do
+    it "works for small sets" do
+      combo_set = test_combo_iterator([:a, :b, :c, :d], 2)
+      combo_set.size.should eq 6
+
+      combo_set = test_combo_iterator([:a, :b, :c, :d], 3)
+      combo_set.size.should eq 4
+    end
+
+    it "works for big sets" do
+      input = (1..30).to_a
+      combo_set = test_combo_iterator(input, 3)
+
+      combo_set.size.should eq 4060
+
+      # TODO(hofer): Get popcount for bigint working.
+#      input = (1..100).to_a
+#      combo_set = test_combo_iterator(input, 3)
+
+#      combo_set.size.should eq 161700
+    end
   end
 end
