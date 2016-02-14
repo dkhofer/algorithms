@@ -101,4 +101,14 @@ module Basics
     x = x ^ y
     [x, y]
   end
+
+  def binary_string(x, n = 32)
+    bit_strings = (0...n).map do
+      temp = x & 1
+      x >>= 1
+      temp == 0 ? "0" : "1"
+    end
+
+    return bit_strings.reverse.join("")
+  end
 end

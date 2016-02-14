@@ -106,4 +106,16 @@ describe "Basics" do
     a.should eq 9287.to_big_i
     b.should eq 395.to_big_i
   end
+
+  context "binary string" do
+    it "converts 0 correctly" do
+      binary_string(0).should eq "0" * 32
+    end
+
+    it "converts another random number correctly" do
+      short_result = 5050.to_s(2)
+      padding = "0" * (64 - short_result.size)
+      binary_string(5050.to_u64, 64).should eq padding + short_result
+    end
+  end
 end
