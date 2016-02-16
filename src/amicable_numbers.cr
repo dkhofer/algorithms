@@ -22,7 +22,7 @@ class AmicableNumbers
   end
 
   def set_up_primes
-    upper_bound = (@max_integer / 10).to_i
+    upper_bound = @max_integer / 10
     puts "Precomputing primes <= #{upper_bound}." if @verbose
     @primes = (2..upper_bound).select { |i| prime?(i) }
   end
