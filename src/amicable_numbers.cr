@@ -38,6 +38,12 @@ class AmicableNumbers
     end
   end
 
+  # NOTE(hofer): Basic idea is the following:
+  # 1. Factor n using the precomputed primes, which is a big enough
+  # list that it will contain any divisors of n
+  # 2. Compute the divisor sum using the factorization (one prime
+  # power at a time), by taking advantage of an algebraic trick.  (OK,
+  # OK, "algebraic identity"...)
   def proper_divisor_sum(n)
     result = 1
     temp_n = n
