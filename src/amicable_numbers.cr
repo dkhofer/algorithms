@@ -18,7 +18,7 @@ class AmicableNumbers
       return false if n % i == 0
     end
 
-    return true
+    true
   end
 
   def set_up_primes
@@ -68,7 +68,7 @@ class AmicableNumbers
       end
     end
 
-    return result - n
+    result - n
   end
 
   def find_pairs
@@ -87,7 +87,7 @@ class AmicableNumbers
       end
     end
 
-    return amicable_numbers.map { |i| [i, proper_divisor_sum(i)] }
+    amicable_numbers.map { |i| [i, proper_divisor_sum(i)] }
   end
 end
 
