@@ -27,15 +27,18 @@ class AmicableNumbers
     @primes = (2..upper_bound).select { |i| prime?(i) }
   end
 
-  def prime_divisor_function(p, power)
+  def prime_power_divisor_sum(prime, power)
     if power == 0
       1
     else
-      (((p ** (power + 1)) - 1) / (p - 1)).to_i32
+      # NOTE(hofer): Given a prime p, divisor_sum(p ** k) ==
+      # 1 + p + (p ** 2) + (p ** 3) + ... + (p ** k-1) + (p ** k) ==
+      # ((p ** (k + 1)) - 1) / (p - 1)
+      (((prime ** (power + 1)) - 1) / (prime - 1)).to_i32
     end
   end
 
-  def proper_divisor_function(n)
+  def proper_divisor_sum(n)
     result = 1
     temp_n = n
 
@@ -44,7 +47,7 @@ class AmicableNumbers
 
       # Short circuit if temp_n is prime.
       if prime > Math.sqrt(temp_n)
-        result *= prime_divisor_function(temp_n, 1)
+        result *= prime_power_divisor_sum(temp_n, 1)
         break
       end
 
@@ -55,7 +58,7 @@ class AmicableNumbers
       end
 
       if prime_exponent > 0
-        result *= prime_divisor_function(prime, prime_exponent)
+        result *= prime_power_divisor_sum(prime, prime_exponent)
       end
     end
 
@@ -64,22 +67,22 @@ class AmicableNumbers
 
   def find_pairs
     already_seen = Set(Int32).new
-    found_numbers = Set(Int32).new
+    amicable_numbers = Set(Int32).new
 
     (2..@max_integer).each do |i|
       unless already_seen.includes?(i)
-        divisor_sum = proper_divisor_function(i)
+        divisor_sum = proper_divisor_sum(i)
         if i != divisor_sum && # Avoid perfect numbers
            !already_seen.includes?(divisor_sum) && # Don't revisit the same pair
-           proper_divisor_function(divisor_sum) == i
+           proper_divisor_sum(divisor_sum) == i
           puts "#{i} #{divisor_sum}" if @verbose
-          found_numbers.add(i)
+          amicable_numbers.add(i)
           already_seen.add(divisor_sum)
         end
       end
     end
 
-    return found_numbers.map { |i| [i, proper_divisor_function(i)] }
+    return amicable_numbers.map { |i| [i, proper_divisor_sum(i)] }
   end
 end
 

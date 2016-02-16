@@ -9,15 +9,15 @@ describe "Amicable numbers" do
 
   it "computes divisor function" do
     worker = AmicableNumbers.new(100_000, false)
-    worker.proper_divisor_function(1).should eq 0
-    worker.proper_divisor_function(2).should eq 1
-    worker.proper_divisor_function(3).should eq 1
-    worker.proper_divisor_function(4).should eq 3
-    worker.proper_divisor_function(6).should eq 6
-    worker.proper_divisor_function(9).should eq 4
-    worker.proper_divisor_function(10).should eq 8
-    worker.proper_divisor_function(24).should eq 36
-    worker.proper_divisor_function(28).should eq 28
+    worker.proper_divisor_sum(1).should eq 0
+    worker.proper_divisor_sum(2).should eq 1
+    worker.proper_divisor_sum(3).should eq 1
+    worker.proper_divisor_sum(4).should eq 3
+    worker.proper_divisor_sum(6).should eq 6
+    worker.proper_divisor_sum(9).should eq 4
+    worker.proper_divisor_sum(10).should eq 8
+    worker.proper_divisor_sum(24).should eq 36
+    worker.proper_divisor_sum(28).should eq 28
   end
 
   it "computes amicable pairs" do
