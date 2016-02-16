@@ -76,10 +76,9 @@ class AmicableNumbers
     amicable_numbers = Set(Int32).new
 
     (2..@max_integer).each do |i|
-      unless already_seen.includes?(i)
+      unless already_seen.includes?(i) # Don't revisit the same pair
         divisor_sum = proper_divisor_sum(i)
         if i != divisor_sum && # Avoid perfect numbers
-           !already_seen.includes?(divisor_sum) && # Don't revisit the same pair
            proper_divisor_sum(divisor_sum) == i
           puts "#{i} #{divisor_sum}" if @verbose
           amicable_numbers.add(i)
