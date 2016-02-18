@@ -34,7 +34,17 @@ describe "BitMatrix" do
     m2.should_not eq m1
   end
 
-  it "multiplies" do
+  it "multiplies vectors" do
+    # 1 0 1   1   1
+    # 1 1 0 * 1 = 0
+    # 1 0 1   0   1
+    m = BitMatrix.new([BitVector.new(0x5), BitVector.new(0x6), BitVector.new(0x5)])
+    v = BitVector.new(0x6)
+    result = m * v
+    result.elements.should eq 0x5
+  end
+
+  it "multiplies other matrices" do
     # 1 0 1   1 1 0   0 0 0
     # 0 1 0 * 0 0 1 = 0 0 1
     # 1 0 1   1 1 0   0 0 0

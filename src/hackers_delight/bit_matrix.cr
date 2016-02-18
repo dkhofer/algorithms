@@ -5,6 +5,16 @@ class BitMatrix
     @rows = rows
   end
 
+  def *(vector : BitVector)
+    result = BitVector.new(0)
+    @rows.each do |row|
+      result.elements <<= 1
+      result.elements |= row.dot_product(vector)
+    end
+
+    result
+  end
+
   def *(other : BitMatrix)
     other_columns = other.transpose.rows
     new_rows = Array.new(@rows.size) { BitVector.new(0) }
