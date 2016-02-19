@@ -31,4 +31,10 @@ describe "BitVector" do
     v1.pairwise_match(v3).should eq 0
     v2.pairwise_match(v3).should eq 1
   end
+
+  it "compresses" do
+    v = BitVector.new(0x0F33AA55)
+    mask = BitVector.new(0x05112211)
+    v.compress(mask).elements.should eq 0xFF
+  end
 end
