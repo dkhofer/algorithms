@@ -24,7 +24,7 @@ class AmicableNumbers
   def set_up_primes
     upper_bound = @max_integer / 10
     puts "Precomputing primes <= #{upper_bound}." if @verbose
-    @primes = (2..upper_bound).select { |i| prime?(i) }
+    @primes = Set.new((2..upper_bound).select { |i| prime?(i) })
   end
 
   def prime_power_divisor_sum(prime, power)
@@ -40,7 +40,7 @@ class AmicableNumbers
 
   # NOTE(hofer): Basic idea is the following:
   # 1. Factor n using the precomputed primes, which is a big enough
-  # list that it will contain any divisors of n
+  # list that it will contain any prime divisors of n
   # 2. Compute the divisor sum using the factorization (one prime
   # power at a time), by taking advantage of an algebraic trick.  (OK,
   # OK, "algebraic identity"...)
@@ -49,12 +49,17 @@ class AmicableNumbers
     temp_n = n
 
     @primes.each do |prime|
-      break if prime > temp_n  # Clearly we're done here.
+      break if temp_n == 1  # Clearly we're done here.
 
-      # Short circuit if temp_n is prime.
+      # Short circuit if temp_n is prime.  Can't just check if it's in
+      # @primes because that list only goes up to a fraction of
+      # @max_integer, and so while anything in it will divide a
+      # composite number less than @max_integer, there will typically
+      # be primes between @primes.last and @max_integer, thus @primes
+      # won't contain them all.
       if prime > Math.sqrt(temp_n)
-        result *= prime_power_divisor_sum(temp_n, 1)
-        break
+        result *= (temp_n + 1)
+        temp_n = 1
       end
 
       prime_exponent = 0

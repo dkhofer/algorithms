@@ -4,7 +4,13 @@ require "../src/amicable_numbers"
 describe "Amicable numbers" do
   it "initializes correctly" do
     a = AmicableNumbers.new(100_000, false)
-    a.primes[0..9].should eq [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    a.primes.to_a[0..9].should eq [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+  end
+
+  it "tests primality" do
+    a = AmicableNumbers.new(100_000, false)
+    a.prime?(2).should eq true
+    a.prime?(73039).should eq true
   end
 
   it "computes divisor function" do
