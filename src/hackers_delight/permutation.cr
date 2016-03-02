@@ -1,10 +1,12 @@
-class Permutation
-  getter :bitmap, :point_map
+require "./bit_matrix"
 
-  def initialize(point_map : Array(Int32))
+class Permutation
+  getter :bitmap, :point_map, :sag_permutations
+
+  def initialize(point_map : Array(UInt32))
     validate_point_map(point_map)
     @point_map = point_map
-    # TODO(hofer): Set this up correctly.
+    compute_sag_permutations(true)
     @bitmap = 0.to_u64
   end
 
@@ -16,16 +18,28 @@ class Permutation
 
   def initialize(bitmap : UInt64)
     # TODO(hofer): Set this up correctly.
-    @point_map = (0..15).to_a
+    @point_map = (0..15).to_a.map { |point| point.to_u32 }
     @bitmap = bitmap
   end
 
-  def compute_mask(use_bitmap)
-    if @point_map.size == 16 && use_bitmap
-      @point_map.each do |point|
-        @bitmap <<= 4
-        @bitmap |= point
-      end
+  def compute_sag_permutations(use_sag)
+    @sag_permutations = Array(UInt64).new(6)
+
+    if @point_map.size == 16 && use_sag
+      point_bit_vectors = @point_map.map do |point|
+        (0..3).map { |i| BitVector.new(4 * point + i) }
+      end.flatten
+
+      point_bit_matrix = BitMatrix.new(point_bit_vectors)
+      sag_vectors = point_bit_matrix.transpose.rows[0..5].map { |row| row.elements.to_u64 }
+
+      sag_vectors[1] = sheep_and_goats(sag_vectors[1], sag_vectors[0])
+      sag_vectors[2] = sheep_and_goats(sheep_and_goats(sag_vectors[2], sag_vectors[0]), sag_vectors[1])
+      sag_vectors[3] = sheep_and_goats(sheep_and_goats(sheep_and_goats(sag_vectors[3], sag_vectors[0]), sag_vectors[1]), sag_vectors[2])
+      sag_vectors[4] = sheep_and_goats(sheep_and_goats(sheep_and_goats(sheep_and_goats(sag_vectors[4], sag_vectors[0]), sag_vectors[1]), sag_vectors[2]), sag_vectors[3])
+      sag_vectors[5] = sheep_and_goats(sheep_and_goats(sheep_and_goats(sheep_and_goats(sheep_and_goats(sag_vectors[5], sag_vectors[0]), sag_vectors[1]), sag_vectors[2]), sag_vectors[3]), sag_vectors[4])
+
+      @sag_permutatations = sag_vectors
     end
   end
 
@@ -44,7 +58,7 @@ class Permutation
     if has_bitmap && other.has_bitmap
       Permutation.new(bit_permute(other.bitmap))
     else
-      new_point_map = Array(Int32).new(@point_map.size, 0)
+      new_point_map = Array(UInt32).new(@point_map.size, 0.to_u32)
       (0...@point_map.size).each do |i|
         new_point_map[i] = other.point_map[@point_map[i]]
       end
@@ -57,17 +71,16 @@ class Permutation
   end
 
   # NOTE(hofer): From Hacker's Delight, chapter 7
-  def naive_compress(mask : UInt64)
+  def naive_compress(bitstring : UInt64, mask : UInt64)
     result = 0.to_u64
     shift = 0
     mask_bit = 0
-    bitmap_copy = @bitmap
 
     while true
       mask_bit = mask & 1
-      result |= ((bitmap_copy & mask_bit) << shift)
+      result |= ((bitstring & mask_bit) << shift)
       shift += mask_bit
-      bitmap_copy >>= 1
+      bitstring >>= 1
       mask >>= 1
       break if mask == 0
     end
@@ -76,14 +89,13 @@ class Permutation
   end
 
   # NOTE(hofer): From Hacker's Delight, chapter 7
-  def compress(mask : UInt64)
+  def compress(bitstring : UInt64, mask : UInt64)
     mk = ~mask << 1
     mp = 0.to_u64
     mv = 0.to_u64
     t = 0.to_u64
 
-    bitmap_copy = @bitmap
-    bitmap_copy &= mask
+    bitstring &= mask
 
     (0..5).each do |i|
       mp = mk ^ (mk << 1)
@@ -94,24 +106,36 @@ class Permutation
       mp = mp ^ (mp << 32)
       mv = mp & mask
       mask = (mask ^ mv) | (mv >> (1 << i))
-      t = bitmap_copy & mv
-      bitmap_copy = (bitmap_copy ^ t) | (t >> (1 << i))
+      t = bitstring & mv
+      bitstring = (bitstring ^ t) | (t >> (1 << i))
       mk &= ~mp
     end
 
-    bitmap_copy
+    bitstring
   end
 
-  def compress_left(mask : UInt64)
-    compress(mask) << (~mask).popcount
+  def compress_left(bitstring : UInt64, mask : UInt64)
+    compress(bitstring, mask) << (~mask).popcount
   end
 
-  def sheep_and_goats(mask : UInt64)
-    compress_left(mask) | compress(~mask)
+  def sheep_and_goats(bitstring : UInt64, mask : UInt64)
+    compress_left(bitstring, mask) | compress(bitstring, ~mask)
+  end
+
+  def compute_bitstring(points : Array(UInt32))
+    raise "Bad size for bitstring: #{points.size}" unless points.size == 16
+
+    bitstring = 0.to_u64
+    points.reverse.each do |point|
+      bitstring <<= 4
+      bitstring |= (point & 0xF)
+    end
+
+    bitstring
   end
 
   def apply(points)
-    mapped_points = Array(Int32).new(point_map.size)
+    mapped_points = Array(UInt32).new(point_map.size)
     (0...point_map.size).each do |i|
       mapped_points[i] = points[@point_map[i]]
     end
@@ -121,7 +145,7 @@ class Permutation
 
   def self.random(n)
     points = (0...n).to_a
-    new_point_mapping = [] of Int32
+    new_point_mapping = [] of UInt32
     until points.empty?
       point = points.sample
       new_point_mapping << point
