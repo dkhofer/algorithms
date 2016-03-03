@@ -17,7 +17,7 @@ class BitMatrix
 
   def *(other : BitMatrix)
     other_columns = other.transpose.rows
-    new_rows = Array.new(@rows.size) { BitVector.new(0) }
+    new_rows = Array.new(@rows.size) { BitVector.new(BigInt.new(0)) }
     other_columns.each do |column|
       @rows.each_with_index do |row, i|
         new_rows[i].elements <<= 1
@@ -38,7 +38,7 @@ class BitMatrix
       row_copy = BitVector.new(row.elements)
       (0...new_rows.size).reverse_each do |i|
         new_rows[i].elements <<= 1
-        new_rows[i].elements |= row_copy.elements & 0x1
+        new_rows[i].elements |= row_copy.elements & BigInt.new(1)
         row_copy.elements >>= 1
       end
     end

@@ -1,8 +1,14 @@
+require "big_int"
+
 class BitVector
   property :elements
 
-  def initialize(bits = 0.to_big_i)
-    @elements = bits.to_big_i
+  def initialize(bits = 0)
+    @elements = BigInt.new(bits)
+  end
+
+  def initialize(bits : BigInt)
+    @elements = bits
   end
 
   def dot_product(other_vector)
@@ -18,7 +24,7 @@ class BitVector
   end
 
   def compress(mask : BitVector)
-    result = 0.to_big_i
+    result = BigInt.new(0)
     shift = 0
     mask_bit = 0
     elements_copy = @elements
