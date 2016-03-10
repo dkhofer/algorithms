@@ -1,0 +1,8 @@
+name: algorithms
+version: 0.1.0
+
+dependencies:
+  matrix:
+    path: /Users/hofer/coding/matrix
+
+License: MIT
