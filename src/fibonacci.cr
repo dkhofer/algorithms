@@ -1,6 +1,7 @@
 require "./algebra"
 require "benchmark"
 require "big_int"
+require "matrix"
 
 class Fibonacci
   def self.naive(n)
@@ -19,15 +20,16 @@ class Fibonacci
   end
 
   def self.using_matrices(n : Int64)
-    (FibMatrix.new ** n).values[1][1]
+    zero = 0.to_big_i
+    one = 1.to_big_i
+    m = Matrix.rows([[one, one], [one, zero]])
+    (m ** n)[1, 1]
   end
 end
 
 class FibMatrix
   include Algebra
 
-  ZERO = 0.to_big_i
-  ONE = 1.to_big_i
   IDENTITY_VALUES = [[ONE, ONE], [ONE, ZERO]]
 
   getter values
