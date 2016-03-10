@@ -7,9 +7,10 @@ end
 
 describe "Permutation" do
   it "multiplies" do
-    # (1,2) * (2,3) = (1,3,2)
-    # ie [2,1,3] * [1,3,2] = [3,1,2]
-    # except we're doing it 0-based here.
+    # Left-hand multiplication is function composition:
+    # p1 = (0 1) = [1, 0, 2]
+    # p2 = (1 2) = [0, 2, 1]
+    # p1 * p2 = [p1(0), p1(2), p1(1)] = [2, 0, 1]
     p1 = Permutation.new(points_to_u32([1, 0, 2]))
     p2 = Permutation.new(points_to_u32([0, 2, 1]))
     p3 = p1 * p2

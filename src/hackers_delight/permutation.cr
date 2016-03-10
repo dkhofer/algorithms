@@ -74,15 +74,18 @@ class Permutation
     result
   end
 
-  # NOTE(hofer): Right-associative multiplication. Eg, if 1 ** x == 5
-  # and 5 ** y = 9, then 1 ** (x * y) = 9.
+  # NOTE(hofer): Left-handed multiplication. Eg, if f(1) == 5 and g(5)
+  # = 9, then g(f(1)) == 9.  This is the opposite of how it's done in
+  # the group theoretic community.  I did it this way in order to
+  # match the multiplication style used in permutation operations
+  # given in Hacker's Delight.
   def *(other : Permutation)
     if has_bitstring && other.has_bitstring
       Permutation.new(bit_permute(other.bitstring))
     else
       new_point_map = Array(UInt32).new(@point_map.size, 0.to_u32)
       (0...@point_map.size).each do |i|
-        new_point_map[i] = other.point_map[@point_map[i]]
+        new_point_map[@point_map[i]] = other.point_map[i]
       end
       Permutation.new(new_point_map)
     end
@@ -164,10 +167,13 @@ class Permutation
     bitstring
   end
 
+  # NOTE(hofer): Again, left-hand application (whatever is at index i
+  # of the point list goes to whatever position is specified at index
+  # i of the point map).
   def apply(points : Array(UInt32))
     mapped_points = Array(UInt32).new(point_map.size) { 0_u32 }
     (0...point_map.size).each do |i|
-      mapped_points[i] = points[@point_map[i]]
+      mapped_points[@point_map[i]] = points[i]
     end
 
     mapped_points
