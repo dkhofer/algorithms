@@ -3,7 +3,7 @@ version: 0.1.0
 
 dependencies:
   matrix:
-    path: /Users/hofer/coding/matrix
-#    github: exilor/matrix
-#    branch: master
+    github: exilor/matrix
+    branch: master
+
 License: MIT

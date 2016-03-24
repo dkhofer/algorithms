@@ -1,4 +1,3 @@
-require "./algebra"
 require "benchmark"
 require "big_int"
 require "matrix"
