@@ -6,4 +6,8 @@ dependencies:
     github: exilor/matrix
     branch: master
 
+  primes:
+    github: dkhofer/primes
+    branch: master
+
 License: MIT

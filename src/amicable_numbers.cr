@@ -1,3 +1,5 @@
+require "primes"
+
 # NOTE(hofer): Based on the (relatively basic) number theoretic trick
 # described in this pair of blog posts:
 # https://hbfs.wordpress.com/2013/08/20/amicable-numbers-part-i/
@@ -11,20 +13,10 @@ class AmicableNumbers
     @primes = set_up_primes
   end
 
-  def prime?(n)
-    return true if n == 2
-
-    (2..Math.sqrt(n) + 1).each do |i|
-      return false if n % i == 0
-    end
-
-    true
-  end
-
   def set_up_primes
     upper_bound = @max_integer / 10
     puts "Precomputing primes <= #{upper_bound}." if @verbose
-    @primes = Set.new((2..upper_bound).select { |i| prime?(i) })
+    @primes = Set.new((2..upper_bound).select { |i| i.prime? })
   end
 
   def prime_power_divisor_sum(prime, power)
