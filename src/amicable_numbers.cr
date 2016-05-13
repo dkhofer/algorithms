@@ -7,7 +7,7 @@ require "primes"
 class AmicableNumbers
   getter :primes
   
-  def initialize(max_integer = 100_000, verbose = true)
+  def initialize(max_integer = 100_000, verbose = true, @primes = Set(Int32).new)
     @max_integer = max_integer
     @verbose = verbose
     @primes = set_up_primes

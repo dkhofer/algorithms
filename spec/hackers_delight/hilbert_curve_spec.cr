@@ -1,18 +1,28 @@
 require "spec"
 require "../../src/hackers_delight/hilbert_curve"
 
+class WalkResults
+  getter :entries
 
-@@walk_results = [] of Array(Int32)
-def spec_visitor_function(direction, x, y, location, n, verbose)
-  @@walk_results << [x, y]
+  def initialize
+    @entries = [] of Array(Int32)
+  end
+
+  def visit(direction, x, y, location, n, verbose)
+    @entries << [x, y]
+    nil
+  end
 end
+
+#@@walk_results = [] of Array(Int32)
 
 describe "HilbertCurve" do
   it "walks correctly" do
-    @@walk_results.clear
-    h = HilbertCurve.new(2, false, ->spec_visitor_function(Int32, Int32, Int32, Int32, Int32, Bool))
+    #    @@walk_results.clear
+    results = WalkResults.new
+    h = HilbertCurve.new(2, false, ->results.visit(Int32, Int32, Int32, Int32, Int32, Bool))
     h.walk
-    @@walk_results.should eq [
+    results.entries.should eq [
       [0,0],
       [1,0],
       [1,1],

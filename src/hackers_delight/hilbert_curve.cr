@@ -4,7 +4,7 @@ require "./basics"
 class HilbertCurve
   include Basics
 
-  def initialize(n = 4, verbose = false, visitor_function = ->self.print_location(Int32, Int32, Int32, Int32, Int32, Bool))
+  def initialize(n = 4, verbose = false, visitor_function : Proc(Int32, Int32, Int32, Int32, Int32, Bool, Nil) = ->self.print_location(Int32, Int32, Int32, Int32, Int32, Bool))
     @n = n
     @x = -1
     @y = 0
@@ -64,6 +64,7 @@ class HilbertCurve
     current_x = binary_string(x, n)
     current_y = binary_string(y, n)
     printf("\n%5d\t%s\t%s\t%s", direction, current_location, current_x, current_y) if verbose
+    nil
   end
 
   def point_from_number(number)

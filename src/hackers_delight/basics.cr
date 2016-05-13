@@ -64,8 +64,8 @@ module Basics
   # array.size.  The current Crystal implementation uses O(m)
   # operations where m = number.
   def each_combination_naive(array, number)
-    counter = (2 ** number - 1).to_big_i
-    max = (2 ** array.size).to_big_i
+    counter = (2.to_big_i ** number) - 1
+    max = 2.to_big_i ** array.size
 
     while counter < max
       yield indexes_from_bits_naive(counter, array).map { |i| array[i] }

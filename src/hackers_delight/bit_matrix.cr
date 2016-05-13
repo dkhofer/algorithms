@@ -1,7 +1,7 @@
 class BitMatrix
   getter :rows
 
-  def initialize(rows)
+  def initialize(rows : Array(BitVector))
     @rows = rows
   end
 
