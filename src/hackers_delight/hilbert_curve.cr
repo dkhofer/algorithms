@@ -59,7 +59,7 @@ class HilbertCurve
     @location += 1
   end
 
-  def self.print_location(direction, x, y, location, n, verbose = false)
+  def print_location(direction, x, y, location, n, verbose = false)
     current_location = binary_string(location, 2 * n)
     current_x = binary_string(x, n)
     current_y = binary_string(y, n)
